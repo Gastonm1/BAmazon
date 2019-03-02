@@ -24,39 +24,52 @@ connection.connect(function(err) {
 
 // Below is a function that uses inquirer to display prompts to the user for what action they should take
 function initApp() {
+  console.log("◇─◇──◇────◇────◇────◇────◇────◇─────◇──◇─◇");
+  console.log("◇─◇──◇────◇────◇──BAmazon──◇────◇────◇─────◇");
   inquirer
     .prompt({
       name: "action",
       type: "rawlist",
-      message: "What would you like to do?",
-      choices: [
-        "See all available items for sale",
-        "Search By product ID",
-        "How many units of product would you like to purchase?",
-        "EXIT"
-      ]
+      message:
+        "Welcome to BAmazon!! Select below to see what we have to offer!",
+      choices: ["See all available items", "EXIT"]
     })
     .then(function(answer) {
-
       switch (answer.action) {
-        case "See all available items for sale":
+        case "See all available items":
           productList();
           break;
 
-        case "Search By product ID":
-          productID();
-          break;
-
-        case "How many units of product would you like to purchase?":
-          productUnits();
-          break;
+        case "EXIT":
+          connection.end();
       }
-    })
+    });
 }
 
-function productList(){
+function productList() {
   var query = "SELECT product_name, price, stock_quantity FROM products";
   connection.query(query, function(err, res) {
- 	console.table(res)
-  }); 
-  };
+    console.table(res);
+    runSearch();
+  });
+  function runSearch() {
+    inquirer
+      .prompt({
+        name: "action",
+        type: "input",
+        message: "Which product would you like to purchase?"
+      })
+      .then(function(answer) {
+        var query =
+          "SELECT product_name, song, stock_quantity FROM products WHERE ?";
+        connection.query(query, { product_name: answer.product_name }, function(
+          err,
+          res
+        ) {
+          for (var i = 0; i < res.length; i++) {
+            console.table("Product: " + res[i].product_name); //< CODE BREAKS HERE!!!
+          }
+        });
+      });
+  }
+}
