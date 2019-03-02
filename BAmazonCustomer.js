@@ -55,7 +55,7 @@ function initApp() {
 }
 
 function productList(){
-connection.query("SELECT * FROM products", function (err, data){
+connection.query("SELECT product_name, price FROM products", function (err, data){
     console.log(err, data);
 }
 )};
