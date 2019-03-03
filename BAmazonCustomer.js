@@ -81,8 +81,20 @@ function productList() {
   function productQuantity(){
     connection.query("SELECT * FROM products where `item_id` = 4", function(err, res) {
       console.table(res);
-      
-  })
+      units();
+    });
+
+  function units(){
+        inquirer
+        .prompt({
+          name: "action",
+          type: "input",
+          message: "How many would you like to buy from inventory?"
+        }).then(function(answer){
+
+          
+        }
+  )}
 };
 
 
