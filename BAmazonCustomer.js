@@ -31,7 +31,7 @@ function initApp() {
       name: "action",
       type: "rawlist",
       message:
-        "Welcome to BAmazon!! Select below to see what we have to offer!",
+        "Welcome to BAmazon!! We encourage you to check out what we have to offer!",
       choices: ["See all available items", "EXIT"]
     })
     .then(function(answer) {
@@ -41,6 +41,7 @@ function initApp() {
           break;
 
         case "EXIT":
+        console.log('Thanks for coming!')
           connection.end();
       }
     });
@@ -58,7 +59,7 @@ function productList() {
       .prompt({
         name: "action",
         type: "input",
-        message: "Which product would you like to purchase?"
+        message: "Type the product name that you would like to purchase."
       })
       .then(function(answer) {
         productQuantity();
@@ -89,7 +90,7 @@ function productList() {
         .prompt({
           name: "action",
           type: "input",
-          message: "How many would you like to buy from inventory?"
+          message: "How many would you like to buy from our inventory?"
         }).then(function(answer){
           inquirer.prompt({
               name: "confirmation",
@@ -101,4 +102,3 @@ function productList() {
 };
 
 
-       
