@@ -91,14 +91,14 @@ function productList() {
           type: "input",
           message: "How many would you like to buy from inventory?"
         }).then(function(answer){
-
-          
+          inquirer.prompt({
+              name: "confirmation",
+              type: "confirm",
+              message: "You want to order " + answer.action + " units of this product from our inventory?",
+              default: false})
         }
   )}
 };
 
 
-        // var query =
-        //   "SELECT product_name, price, stock_quantity FROM products WHERE ?";
-        // connection.query(query, {product_name: answer.product_name })
-        //     console.table("Product: " + answer.product_name); //< CODE BREAKS HERE!!!
+       
