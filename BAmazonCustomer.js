@@ -52,6 +52,7 @@ function productList() {
     console.table(res);
     runSearch();
   });
+
   function runSearch() {
     inquirer
       .prompt({
@@ -60,16 +61,32 @@ function productList() {
         message: "Which product would you like to purchase?"
       })
       .then(function(answer) {
-        var query =
-          "SELECT product_name, song, stock_quantity FROM products WHERE ?";
-        connection.query(query, { product_name: answer.product_name }, function(
-          err,
-          res
-        ) {
-          for (var i = 0; i < res.length; i++) {
-            console.table("Product: " + res[i].product_name); //< CODE BREAKS HERE!!!
-          }
-        });
-      });
-  }
-}
+        productQuantity();
+        // inquirer.prompt({
+        //   name: "confirmation",
+        //   type: "confirm",
+        //   message: "You want to purchase a " + answer.action + " ?",
+        //   default: false})
+
+        //   if (answer.default = "Yes") {
+        //       productQuantity();
+        //   } else
+        //         connection.end();
+        //   })
+        // };
+      })
+    }
+  };
+
+  function productQuantity(){
+    connection.query("SELECT * FROM products where `item_id` = 4", function(err, res) {
+      console.table(res);
+      
+  })
+};
+
+
+        // var query =
+        //   "SELECT product_name, price, stock_quantity FROM products WHERE ?";
+        // connection.query(query, {product_name: answer.product_name })
+        //     console.table("Product: " + answer.product_name); //< CODE BREAKS HERE!!!
