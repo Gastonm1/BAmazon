@@ -41,7 +41,7 @@ function initApp() {
           break;
 
         case "EXIT":
-        console.log('Thanks for coming!')
+          console.log("Thanks for coming!");
           connection.end();
       }
     });
@@ -62,7 +62,8 @@ function productList() {
         message: "Type the product name that you would like to purchase."
       })
       .then(function(answer) {
-        productQuantity();
+        console.log(answer.action);
+        productQuantity(answer.action);
         // inquirer.prompt({
         //   name: "confirmation",
         //   type: "confirm",
@@ -75,30 +76,70 @@ function productList() {
         //         connection.end();
         //   })
         // };
-      })
-    }
-  };
+      });
+  }
+}
 
-  function productQuantity(){
-    connection.query("SELECT * FROM products where `item_id` = 4", function(err, res) {
+function productQuantity(answer) {
+  connection.query(
+    "SELECT * FROM products where product_name = ?",
+    [answer],
+    function(err, res) {
       console.table(res);
-      units();
-    });
+      units(res);
+    }
+  );
 
-  function units(){
+  function units(results) {
+    inquirer
+      .prompt({
+        name: "action",
+        type: "input",
+        message: "How many would you like to buy from our inventory?"
+      })
+      .then(function(answer) {
         inquirer
-        .prompt({
-          name: "action",
-          type: "input",
-          message: "How many would you like to buy from our inventory?"
-        }).then(function(answer){
-          inquirer.prompt({
-              name: "confirmation",
-              type: "confirm",
-              message: "You want to order " + answer.action + " units of this product from our inventory?",
-              default: false})
-        }
-  )}
-};
-
-
+          .prompt({
+            name: "confirmation",
+            type: "confirm",
+            message:
+              "You want to order " +
+              answer.action +
+              " units of this product from our inventory?",
+            default: false
+          })
+          .then(function(confirmation) {
+            if (answer.action <= results[0].stock_quantity) {
+              connection.query(
+                "UPDATE products SET stock_quantity = ? WHERE product_name = ?",
+                [
+                  results[0].stock_quantity - answer.action,
+                  results[0].product_name
+                ],
+                function(err, res) {
+                  if (err) {
+                    throw err;
+                  }
+                }
+              );
+              connection.query(
+                "SELECT * FROM products where product_name = ?",
+                [results[0].product_name],
+                function(err, res) {
+                  console.table(res);
+                  units(res);
+                }
+              );
+              console.log(`Fullfilled Order!`);
+              console.log(
+                `You spent ${answer.action *
+                  results[0].stock_quantity} dollars!`
+              );
+            } else {
+              console.log("Insufficient Quantity!");
+            }
+          });
+      });
+  }
+  return
+}
