@@ -17,11 +17,6 @@ connection.connect(function(err) {
   initApp();
 });
 
-// connection.query("SELECT * FROM products", function (err, data){
-//     console.log(err, data);
-
-// })    <-- DO NOT NEED=====================================================
-
 // Below is a function that uses inquirer to display prompts to the user for what action they should take
 function initApp() {
   console.log("◇─◇──◇────◇────◇────◇────◇────◇─────◇──◇─◇");
@@ -51,6 +46,7 @@ function productList() {
   var query = "SELECT product_name, price, stock_quantity FROM products";
   connection.query(query, function(err, res) {
     console.table(res);
+    console.log("in run search");
     runSearch();
   });
 
@@ -64,18 +60,6 @@ function productList() {
       .then(function(answer) {
         console.log(answer.action);
         productQuantity(answer.action);
-        // inquirer.prompt({
-        //   name: "confirmation",
-        //   type: "confirm",
-        //   message: "You want to purchase a " + answer.action + " ?",
-        //   default: false})
-
-        //   if (answer.default = "Yes") {
-        //       productQuantity();
-        //   } else
-        //         connection.end();
-        //   })
-        // };
       });
   }
 }
@@ -127,19 +111,42 @@ function productQuantity(answer) {
                 [results[0].product_name],
                 function(err, res) {
                   console.table(res);
-                  units(res);
                 }
               );
-              console.log(`Fullfilled Order!`);
+              console.log(`\nFulfilled Order!\n`);
               console.log(
                 `You spent ${answer.action *
                   results[0].stock_quantity} dollars!`
-              );
+                  
+              )
+              buyMore();
             } else {
               console.log("Insufficient Quantity!");
+              console.log("Please try again!");
             }
           });
-      });
+          function buyMore(){
+            inquirer
+            .prompt({
+              name: "More monies?",
+              type: "confirm",
+              message:
+                "\nDo you want to spend more monies?",
+              default: false
+            }).then(function(answer) {
+              switch (answer.action) {
+                case "Yes":
+                  productList();
+                  break;
+        
+                case "No":
+                  console.log("Thanks for coming!");
+                  connection.end();
+              }
+            });
+            }
+          }
+      )
+      }
   }
-  return
-}
+
