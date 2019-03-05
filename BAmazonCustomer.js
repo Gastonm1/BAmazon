@@ -46,7 +46,6 @@ function productList() {
   var query = "SELECT product_name, price, stock_quantity FROM products";
   connection.query(query, function(err, res) {
     console.table(res);
-    console.log("in run search");
     runSearch();
   });
 
@@ -107,7 +106,7 @@ function productQuantity(answer) {
                 }
               );
               connection.query(
-                "SELECT * FROM products where product_name = ?",
+                "SELECT * FROM products where product_name = ?\n",
                 [results[0].product_name],
                 function(err, res) {
                   console.table(res);
@@ -119,34 +118,33 @@ function productQuantity(answer) {
                   results[0].stock_quantity} dollars!`
                   
               )
-              buyMore();
+              //buyMore();
             } else {
               console.log("Insufficient Quantity!");
               console.log("Please try again!");
             }
           });
-          function buyMore(){
-            inquirer
-            .prompt({
-              name: "More monies?",
-              type: "confirm",
-              message:
-                "\nDo you want to spend more monies?",
-              default: false
-            }).then(function(answer) {
-              switch (answer.action) {
-                case "Yes":
-                  productList();
-                  break;
-        
-                case "No":
-                  console.log("Thanks for coming!");
-                  connection.end();
-              }
-            });
             }
-          }
-      )
-      }
+      )}
   }
 
+//   function buyMore(){
+//     inquirer
+//     .prompt({
+//       name: "action",
+//       type: "confirm",
+//       message:
+//         "Do you want to spend more monies?",
+//       default: true
+//     }).then(function(answer) {
+//       switch (answer.action) {
+//         case "Yes":
+//           productList();
+//           break;
+
+//         case "No":
+//           console.log("Thanks for coming!");
+//           connection.end();
+//       }
+//     });
+// }
